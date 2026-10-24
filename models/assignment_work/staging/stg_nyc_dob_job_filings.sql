@@ -19,7 +19,7 @@ cleaned AS (
            postcode,
            borough,
            latitude,
-           longitude,
+           longitude
        ),
 
        -- Identifiers
@@ -68,11 +68,11 @@ cleaned AS (
    -- Filters
    WHERE job_filing_number IS NOT NULL
    AND filing_date IS NOT NULL
-   AND CAST(job_filing_number AS DATE) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 YEAR)
+   AND CAST(filing_date AS DATE) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 YEAR)
    AND borough IS NOT NULL
 
    -- Deduplicate
-   QUALIFY ROW_NUMBER() OVER (PARTITION BY job_filing_id ORDER BY filing_date DESC) = 1
+   QUALIFY ROW_NUMBER() OVER (PARTITION BY job_filing_number ORDER BY filing_date DESC) = 1
 )
 
 SELECT * FROM cleaned
