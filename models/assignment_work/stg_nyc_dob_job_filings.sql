@@ -13,30 +13,24 @@ cleaned AS (
            job_filing_number,
            filing_date,
            signoff_date,
-           owner_type,
-           applicant_business_name,
            job_type,
            job_description,
            filing_status,
            postcode,
            borough,
-           filing_representative_street_name,
            latitude,
            longitude,
        ),
 
        -- Identifiers
-       CAST(unique_key AS STRING) AS job_filing_id,
+       CAST(job_filing_number AS STRING) AS job_filing_id,
 
        -- Date/Time
-       CAST(filing_date AS TIMESTAMP) AS created_date,
-       CAST(signoff_date AS TIMESTAMP) AS closed_date,
+       CAST(filing_date AS TIMESTAMP) AS filing_date,
+       CAST(signoff_date AS TIMESTAMP) AS signoff_date,
 
        -- Request details
-       CAST(owner_type AS STRING) AS owner_type,
-       CAST(applicant_business_name AS STRING) AS applicant_business_name,
        CAST(job_type AS STRING) AS job_type,
-       CAST(complaint_type AS STRING) AS complaint_type,
        CAST(job_description AS STRING) AS job_description,
        UPPER(TRIM(CAST(filing_status AS STRING))) AS filing_status,
 
@@ -62,7 +56,6 @@ cleaned AS (
            ELSE 'UNKNOWN or CITYWIDE'
        END AS borough,
 
-       CAST(filing_representative_street_name AS STRING) AS incident_address,
        CAST(latitude AS DECIMAL) AS latitude,
        CAST(longitude AS DECIMAL) AS longitude,
 
@@ -73,13 +66,13 @@ cleaned AS (
    FROM source
 
    -- Filters
-   WHERE job_filing_id IS NOT NULL
-   AND created_date IS NOT NULL
-   AND CAST(created_date AS DATE) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 YEAR)
+   WHERE job_filing_number IS NOT NULL
+   AND filing_date IS NOT NULL
+   AND CAST(job_filing_number AS DATE) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 YEAR)
    AND borough IS NOT NULL
 
    -- Deduplicate
-   QUALIFY ROW_NUMBER() OVER (PARTITION BY job_filing_id ORDER BY created_date DESC) = 1
+   QUALIFY ROW_NUMBER() OVER (PARTITION BY job_filing_id ORDER BY filing_date DESC) = 1
 )
 
 SELECT * FROM cleaned
