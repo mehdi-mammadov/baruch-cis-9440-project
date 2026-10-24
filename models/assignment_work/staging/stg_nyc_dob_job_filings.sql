@@ -17,6 +17,7 @@ cleaned AS (
            job_description,
            filing_status,
            postcode,
+           zip,
            borough,
            latitude,
            longitude
