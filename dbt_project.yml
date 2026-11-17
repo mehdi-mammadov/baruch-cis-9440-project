@@ -39,3 +39,7 @@ models:
 
        dot_311:
          +materialized: table
+   group10:
+     staging:
+       +materialized: table
+       +schema: nyc_project_staging_dev
