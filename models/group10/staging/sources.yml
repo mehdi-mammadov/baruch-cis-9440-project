@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: group10_raw
+    database: mehdi-baruch
+    schema: nyc_project_raw_data
+    tables:
+      - name: source_nyc_open_restaurant_inspections
+      - name: source_nyc_311_noise_complaints
+      
